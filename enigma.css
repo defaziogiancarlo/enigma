@@ -1,0 +1,19 @@
+#input {
+  background-color: rgb(200,240,200);
+}
+
+
+#output {
+  background-color: rgb(200,200,240);
+}
+
+.boxy {
+  float: left;
+  height: 150px;
+  width: 250px;
+  border-radius: 5%;
+  margin: 30px;
+  padding: 40px;
+  font-size: 1.2em;
+  border: solid 1px grey;
+}
