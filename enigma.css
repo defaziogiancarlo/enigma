@@ -17,3 +17,31 @@
   font-size: 1.2em;
   border: solid 1px grey;
 }
+
+.clear-float {
+  clear: both;
+}
+
+.key {
+  height: 30px;
+  width: 30px;
+  background-color: rgb(230,240,240);
+  border-radius: 50%;
+  float: left;
+  margin: 6px;
+  padding: 18px;
+  border: solid 2px black;
+  text-align: center;
+}
+
+#q {
+  margin-left: 50px;
+}
+
+#a {
+  margin-left: 70px;
+}
+
+#z {
+  margin-left: 108px;
+}
