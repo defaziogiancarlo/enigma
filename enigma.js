@@ -1,27 +1,42 @@
+// Gian-Carlo DeFazio February 2018
+// This is an adaptation of program I wrote in Java for
+// my CS 143 class at Tacoma Community College
 
 // global constants
-
 // the standard alphabet
-const alphabet   = Array.from("abcdefghijklmnopqrstuvwxyz")
-const alphabetS   = "abcdefghijklmnopqrstuvwxyz";
-// the rotor configurations
-//                             abcdefghijklmnopqrstuvwxyz
-const I_CODE     = Array.from("ekmflgdqvzntowyhxuspaibrcj");
-const II_CODE    = Array.from("ajdksiruxblhwtmcqgznpyfvoe");
-const III_CODE   = Array.from("bdfhjlcprtxvznyeiwgakmusqo");
-const IV_CODE    = Array.from("esovpzjayquirhxlnftgkdcmwb");
-const V_CODE     = Array.from("vzbrgityupsdnhlxawmjqofeck");
-const VI_CODE    = Array.from("jpgvoumfyqbenhzrdkasxlictw");
-const VII_CODE   = Array.from("nzjhgrcxmyswboufaivlpekqdt");
-const VIII_CODE  = Array.from("fkqhtlxocbjspdzramewniuygv");
-const BETA_CODE  = Array.from("leyjvcnixwpbqmdrtakzgfuhos");
-const GAMMA_CODE = Array.from("fsokanuerhmbtiycwlqpzxvgjd");
+const alphabet    = Array.from("abcdefghijklmnopqrstuvwxyz")
 
-const letterToInt = makeMappingFunction(alphabet, makeRangeArray(0,26));
-const intToLetter = makeMappingFunction(makeRangeArray(0,26), alphabet);
+// rotor configurations         abcdefghijklmnopqrstuvwxyz
+const I_CODE      = Array.from("ekmflgdqvzntowyhxuspaibrcj");
+const II_CODE     = Array.from("ajdksiruxblhwtmcqgznpyfvoe");
+const III_CODE    = Array.from("bdfhjlcprtxvznyeiwgakmusqo");
+const IV_CODE     = Array.from("esovpzjayquirhxlnftgkdcmwb");
+const V_CODE      = Array.from("vzbrgityupsdnhlxawmjqofeck");
+const VI_CODE     = Array.from("jpgvoumfyqbenhzrdkasxlictw");
+const VII_CODE    = Array.from("nzjhgrcxmyswboufaivlpekqdt");
+const VIII_CODE   = Array.from("fkqhtlxocbjspdzramewniuygv");
 
-// make array of integers [low,...(high-1)]
-// or empty array if (high - 1) < low
+const I_ROTATE    = ["r"];
+const II_ROTATE   = ["f"];
+const III_ROTATE  = ["w"];
+const IV_ROTATE   = ["k"];
+const V_ROTATE    = ["a"];
+const VI_ROTATE   = ["a", "n"];
+const VII_ROTATE  = ["a", "n"];
+const VIII_ROTATE = ["a", "n"];
+
+// reflector configurations     abcdefghijklmnopqrstuvwxyz
+const A           = Array.from("ejmzalyxvbwfcrquontspikhgd");
+const B           = Array.from("yruhqsldpxngokmiebfzcwvjat");
+const C           = Array.from("fvpjiaoyedrzxwgctkuqsbnmhl");
+const BTHIN       = Array.from("enkqauywjicopblmdxzvfthrgs");
+const CTHIN       = Array.from("rdobjntkvehmlfcwzaxgyipsuq");
+
+const zeroTo25    = makeRangeArray(0,26);
+const letterToInt = makeMappingFunction(alphabet, zeroTo25);
+const intToLetter = makeMappingFunction(zeroTo25, alphabet);
+
+// make array of integers [low,...(high-1)] or empty array if (high - 1) < low
 // does not check for values outside of integer range
 function makeRangeArray(low, high) {
   if ((high - 1) < low) {
@@ -54,83 +69,65 @@ function makeMappingFunction(source, target) {
 }
 
 
-
-
-
-
-
-// creates an object that is a mapping of strings
-// to other strings
-// mapping is from source to target
-function makeMapping2(source, target) {
-  var size = source.length;
-  var mapping = {};
-  for (let i = 0; i < source.length; i++) {
-    mapping[source[i]] = target[i];
-  }
-  console.log(mapping);
-  var mapFunction = function(input, pos) {
-    return (mapping[(input + pos) % size] - (pos + size)) % size;
-  }
-  //return mapFunction;
-  return mapFunction;
-}
-
 // given two array of strings, representing inputs to outputs of a rotor
 // converts letters to integer values, and returns a function
 // that takes an input location and the rotor's current rotational position
 // and outputs an output location
 function makeRotorMapping(source, target) {
   var size = source.length;
-  console.log(size);
   var mapping = makeMapping(source.map(letterToInt), target.map(letterToInt));
-  console.log(mapping);
-  var mapFunction = function(input, pos) {
+  var mapFunction = function(input) {
     // input location in absolute coordinates  = input
     // input location in relative coordinates  = (input + pos) % size
     // output location in relative coordinates = mapping[(input + pos) % size]
     // then convert relative output coordinates to absolute
-    return (mapping[(input + pos) % size] - (pos % size) + size) % size;
+    return (mapping[(input + this.pos) % size] - (this.pos % size) + size) % size;
   }
   return mapFunction;
 }
 
 var jj = makeRotorMapping(alphabet, I_CODE);
 
-// function makeEncryptor(code, ref) {
-//   // verify properties of the inputs
-//   // should be same size and have same chracters
-//
-//   var fwd = makeMapping(ref, code);
-// //  var rev = makeMapping(code, ref);
-//   var modulus = ref.length;
-// //  var
+// code is the mapping, the output values
+function Rotor(code) {
+  this.fwd = makeRotorMapping(alphabet, code);
+  this.rev = makeRotorMapping(code, alphabet);
+  this.pos = 0;
+  this.ringSetting = 0;
+//  this.rotateLetters = rotateLetters;
+}
 
+function Reflector(code) {
+  this.reflect = makeMappingFunction(zeroTo25, code.map(letterToInt));
+}
 
-
-
-
-//}
-
-// code is the mapping, the oupput values
-// ref is the reference alpahbet
-function Rotor(code, ref) {
-  this.code = code;
-  this.ref = ref;
-  this.posistion = 0;
-  this.forwardEncryptor = make
+function Enigma(rotors, reflector) {
+  this.rotors = rotors;
+  this.reflector = reflector;
+  this.encrypt = function(c) {
+    var x = letterToInt(c);
+    for (let i = 0; i < this.rotors.length; i++) {
+      x = this.rotors[i].fwd(x);
+    }
+    x = this.reflector.reflect(x);
+    for (let i = this.rotors.length - 1; i > -1; i--) {
+      x = this.rotors[i].rev(x);
+    }
+    x = intToLetter(x);
+    return x;
+  }
 }
 
 
+var theRotors = [new Rotor(I_CODE), new Rotor(II_CODE), new Rotor(III_CODE)];
+var refl = new Reflector(A);
 
-
-
+var En = new Enigma(theRotors, refl);
 
 
 document.getElementById("input-button").onclick = function() {
   var inputVal = document.getElementById("input-box").value;
   document.getElementById("output-box").value = inputVal;
-  console.log("hey");
 }
 
 
@@ -141,9 +138,3 @@ for (let i = 0; i < alphabet.length; i++) {
     console.log(alphabet[i]);
   }
 }
-
-// var I = {};
-// for (let i = 0; i < I_CODE.length; i++) {
-//   I[alphabet[i]] = I_CODE[i];
-// }
-// console.log(I);
