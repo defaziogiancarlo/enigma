@@ -1,6 +1,4 @@
 // Gian-Carlo DeFazio February 2018
-// This is an adaptation of program I wrote in Java for
-// my CS 143 class at Tacoma Community College
 
 // global constants
 // the standard alphabet
@@ -86,12 +84,11 @@ function makeRotorMapping(source, target) {
   return mapFunction;
 }
 
-var jj = makeRotorMapping(alphabet, I_CODE);
 
 // code is the mapping, the output values
 function Rotor(code) {
-  this.fwd = makeRotorMapping(alphabet, code);
-  this.rev = makeRotorMapping(code, alphabet);
+  this.forward = makeRotorMapping(alphabet, code);
+  this.reverse = makeRotorMapping(code, alphabet);
   this.pos = 0;
   this.ringSetting = 0;
 //  this.rotateLetters = rotateLetters;
@@ -107,14 +104,17 @@ function Enigma(rotors, reflector) {
   this.encrypt = function(c) {
     var x = letterToInt(c);
     for (let i = 0; i < this.rotors.length; i++) {
-      x = this.rotors[i].fwd(x);
+      x = this.rotors[i].forward(x);
     }
     x = this.reflector.reflect(x);
     for (let i = this.rotors.length - 1; i > -1; i--) {
-      x = this.rotors[i].rev(x);
+      x = this.rotors[i].reverse(x);
     }
     x = intToLetter(x);
     return x;
+  }
+  this.step = function() {
+      //step
   }
 }
 
