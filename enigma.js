@@ -1,4 +1,5 @@
 // Gian-Carlo DeFazio February 2018
+// enigma information at http://users.telenet.be/d.rijmenants/en/enigmatech.htm
 
 // global constants
 // the standard alphabet
@@ -90,6 +91,7 @@ function Rotor(code, rotateLetters) {
   this.pos = 0;
   this.ringSetting = 0;
   this.rotatePositions = rotateLetters.map(letterToInt);
+  this.ringPos = 0;
 }
 
 function Reflector(code) {
@@ -101,34 +103,52 @@ function Enigma(rotors, reflector) {
   this.reflector = reflector;
   // need to add plugboard steps too
   this.encrypt = function(c) {
-    //console.log(c);
     var x = letterToInt(c);
-    //console.log(intToLetter(x) + x);
     for (let i = 0; i < this.rotors.length; i++) {
       x = this.rotors[i].forward(x);
-      //console.log(intToLetter(x) + x);console.log(this.rotors[0].pos)
     }
     x = this.reflector.reflect(x);
-    //console.log(intToLetter(x) + x);
     for (let i = this.rotors.length - 1; i > -1; i--) {
       x = this.rotors[i].reverse(x);
-     // console.log(intToLetter(x) + x);
     }
     x = intToLetter(x);
-    //console.log(x);
     return x;
   }
+  // the stepping sequence is not quite like a normal odometer
+  //
   this.step = function() {
     // step the 0th rotor by 1
     this.rotors[0].pos = (this.rotors[0].pos + 1) % 26;
-
+    // stepping for middle rotor (rotors[1])
+    // either rotors[0] reaches a rotate position
+    // or rotors[1] is just before it's rotate position
+    if (this.rotors[0].rotatePositions.includes(this.rotors[0].pos) ||
+        this.rotors[1].rotatePositions.includes((this.rotors[1].pos + 1) % 26)) {
+        // rotate rotor 1
+        this.rotors[1].pos = (this.rotors[1].pos + 1) % 26;
+        // check if this now requires a step for rotors[2]
+        if (this.rotors[1].rotatePositions.includes(this.rotors[1].pos)) {
+            this.rotors[2].pos = (this.rotors[2].pos + 1) % 26;
+        }
+    }
   }
+
   this.buttonPress = function(c) {
       this.step();
-      //console.log(this.rotors[0].pos)
-      //console.log(this.rotors[1].pos)
-      //console.log(this.rotors[2].pos)
+    //   console.log(intToLetter(this.rotors[0].pos))
+    //   console.log(intToLetter(this.rotors[1].pos))
+    //   console.log(intToLetter(this.rotors[2].pos))
+    //   console.log("---------------------")
+
       return this.encrypt(c);
+  }
+  this.blockInput = function(text) {
+      var nums = letterToInt(text);
+      var output = "";
+      for (let i = 0; i < text.length; i++) {
+          output += this.buttonPress(text[i]);
+      }
+      document.getElementById("output-box").value = output;
   }
 }
 
@@ -138,12 +158,13 @@ var theRotors = [new Rotor(III_CODE, III_ROTATE), new Rotor(II_CODE, II_ROTATE),
 var refl = new Reflector(B);
 
 var En = new Enigma(theRotors, refl);
-//En.rotors[0].pos = 25;
+En.rotors[1].pos = 2;
 
 
 document.getElementById("input-button").onclick = function() {
-  var inputVal = document.getElementById("input-box").value;
-  document.getElementById("output-box").value = inputVal;
+  var inputVal = document.getElementById("text-input").value;
+  En.blockInput(inputVal);
+  //document.getElementById("output-box").value = inputVal;
 }
 
 

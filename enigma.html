@@ -11,56 +11,117 @@
 
 
   <body>
+    <div id="preamble">
     <h1>Enigma Simulator</h1>
-    <p>Put an enigma machine here someday</p>
-
-    <div id="input" class="boxy">
-      <p>input</p>
-      <input type="text" id="input-box"></input>
-      <button id="input-button">enter letter</button>
+    <p>Built using the information found
+        <a href="http://users.telenet.be/d.rijmenants/en/enigmatech.htm"target="_blank">
+            here
+        </a>
+    </p>
     </div>
 
-    <div id="output" class="boxy">
-      <p>output</p>
-      <input type="text" id="output-box"></input>
+    <div id="settings">
+        <div id="reflector-box">
+            Reflector<br>
+            A<input type="radio" id="refA" name="reflector-type"></input><br>
+            B<input type="radio" id="refB" name="reflector-type"></input><br>
+            C<input type="radio" id="refC" name="reflector-type"></input>
+        </div>
+
+        <div>
+            <div id="rotor3" class="rotor-box">
+                Rotor 1<br>
+                1<input type="radio" id="rot11" name="rotor1-type"></input>&nbsp;&nbsp;
+                2<input type="radio" id="ref12" name="rotor1-type"></input><br>
+                3<input type="radio" id="ref13" name="rotor1-type"></input>&nbsp;&nbsp;
+                4<input type="radio" id="rot14" name="rotor1-type"></input><br>
+                5<input type="radio" id="ref15" name="rotor1-type"></input>&nbsp;&nbsp;
+                6<input type="radio" id="ref16" name="rotor1-type"></input><br>
+                7<input type="radio" id="ref17" name="rotor1-type"></input>&nbsp;&nbsp;
+                8<input type="radio" id="ref18" name="rotor1-type"></input>
+            </div>
+        </div>
+
+        <div id="rotor2" class="rotor-box">
+            Rotor 2<br>
+            1<input type="radio" id="rot21" name="rotor2-type"></input>&nbsp;&nbsp;
+            2<input type="radio" id="ref22" name="rotor2-type"></input><br>
+            3<input type="radio" id="ref23" name="rotor2-type"></input>&nbsp;&nbsp;
+            4<input type="radio" id="rot24" name="rotor2-type"></input><br>
+            5<input type="radio" id="ref25" name="rotor2-type"></input>&nbsp;&nbsp;
+            6<input type="radio" id="ref26" name="rotor2-type"></input><br>
+            7<input type="radio" id="ref27" name="rotor2-type"></input>&nbsp;&nbsp;
+            8<input type="radio" id="ref28" name="rotor2-type"></input>
+        </div>
+
+        <div id="rotor1" class="rotor-box">
+            Rotor 3<br>
+            1<input type="radio" id="rot31" name="rotor3-type"></input>&nbsp;&nbsp;
+            2<input type="radio" id="ref32" name="rotor3-type"></input><br>
+            3<input type="radio" id="ref33" name="rotor3-type"></input>&nbsp;&nbsp;
+            4<input type="radio" id="rot34" name="rotor3-type"></input><br>
+            5<input type="radio" id="ref35" name="rotor3-type"></input>&nbsp;&nbsp;
+            6<input type="radio" id="ref36" name="rotor3-type"></input><br>
+            7<input type="radio" id="ref37" name="rotor3-type"></input>&nbsp;&nbsp;
+            8<input type="radio" id="ref38" name="rotor3-type"></input>
+        </div>
+
     </div>
 
     <div class="clear-float"></div>
 
-    <div class="key" id="q">Q</div>
-    <div class="key" id="w">W</div>
-    <div class="key" id="e">E</div>
-    <div class="key" id="r">R</div>
-    <div class="key" id="t">T</div>
-    <div class="key" id="y">Y</div>
-    <div class="key" id="u">U</div>
-    <div class="key" id="i">I</div>
-    <div class="key" id="o">O</div>
-    <div class="key" id="p">P</div>
 
-    <div class="clear-float"></div>
+    <div id="boxes">
+        <div id="input" class="boxy">
+          <p>input</p>
+          <textarea id="text-input"></textarea>
+          <button id="input-button">enter block</button>
+        </div>
 
-    <div class="key" id="a">A</div>
-    <div class="key" id="s">S</div>
-    <div class="key" id="d">D</div>
-    <div class="key" id="f">F</div>
-    <div class="key" id="g">G</div>
-    <div class="key" id="h">H</div>
-    <div class="key" id="j">J</div>
-    <div class="key" id="k">K</div>
-    <div class="key" id="l">L</div>
+        <div id="output" class="boxy">
+          <p>output</p>
+          <input type="text" id="output-box"></input>
+        </div>
+    </div>
 
-    <div class="clear-float"></div>
+    <div id="keys">
 
-    <div class="key" id="z">Z</div>
-    <div class="key" id="x">X</div>
-    <div class="key" id="c">C</div>
-    <div class="key" id="v">V</div>
-    <div class="key" id="b">B</div>
-    <div class="key" id="n">N</div>
-    <div class="key" id="m">M</div>
+        <div class="clear-float"></div>
 
+        <div class="key" id="q">Q</div>
+        <div class="key" id="w">W</div>
+        <div class="key" id="e">E</div>
+        <div class="key" id="r">R</div>
+        <div class="key" id="t">T</div>
+        <div class="key" id="y">Y</div>
+        <div class="key" id="u">U</div>
+        <div class="key" id="i">I</div>
+        <div class="key" id="o">O</div>
+        <div class="key" id="p">P</div>
 
+        <div class="clear-float"></div>
+
+        <div class="key" id="a">A</div>
+        <div class="key" id="s">S</div>
+        <div class="key" id="d">D</div>
+        <div class="key" id="f">F</div>
+        <div class="key" id="g">G</div>
+        <div class="key" id="h">H</div>
+        <div class="key" id="j">J</div>
+        <div class="key" id="k">K</div>
+        <div class="key" id="l">L</div>
+
+        <div class="clear-float"></div>
+
+        <div class="key" id="z">Z</div>
+        <div class="key" id="x">X</div>
+        <div class="key" id="c">C</div>
+        <div class="key" id="v">V</div>
+        <div class="key" id="b">B</div>
+        <div class="key" id="n">N</div>
+        <div class="key" id="m">M</div>
+
+    </div>
 
 
 
