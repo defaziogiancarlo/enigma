@@ -48,7 +48,6 @@ function makeRangeArray(low, high) {
   return rangeArray;
 }
 
-
 // creates an object that maps corresponding elements (by index)
 // of source to target
 // does not not verify properties of result (injective,surjective,bijective)
@@ -65,7 +64,6 @@ function makeMappingFunction(source, target) {
   var mapping = makeMapping(source, target);
   return function(x) {return mapping[x]};
 }
-
 
 // given two array of strings, representing inputs to outputs of a rotor
 // converts letters to integer values, and returns a function
@@ -86,12 +84,12 @@ function makeRotorMapping(source, target) {
 
 
 // code is the mapping, the output values
-function Rotor(code) {
+function Rotor(code, rotateLetters) {
   this.forward = makeRotorMapping(alphabet, code);
   this.reverse = makeRotorMapping(code, alphabet);
   this.pos = 0;
   this.ringSetting = 0;
-//  this.rotateLetters = rotateLetters;
+  this.rotatePositions = rotateLetters.map(letterToInt);
 }
 
 function Reflector(code) {
@@ -101,28 +99,46 @@ function Reflector(code) {
 function Enigma(rotors, reflector) {
   this.rotors = rotors;
   this.reflector = reflector;
+  // need to add plugboard steps too
   this.encrypt = function(c) {
+    //console.log(c);
     var x = letterToInt(c);
+    //console.log(intToLetter(x) + x);
     for (let i = 0; i < this.rotors.length; i++) {
       x = this.rotors[i].forward(x);
+      //console.log(intToLetter(x) + x);console.log(this.rotors[0].pos)
     }
     x = this.reflector.reflect(x);
+    //console.log(intToLetter(x) + x);
     for (let i = this.rotors.length - 1; i > -1; i--) {
       x = this.rotors[i].reverse(x);
+     // console.log(intToLetter(x) + x);
     }
     x = intToLetter(x);
+    //console.log(x);
     return x;
   }
   this.step = function() {
-      //step
+    // step the 0th rotor by 1
+    this.rotors[0].pos = (this.rotors[0].pos + 1) % 26;
+
+  }
+  this.buttonPress = function(c) {
+      this.step();
+      //console.log(this.rotors[0].pos)
+      //console.log(this.rotors[1].pos)
+      //console.log(this.rotors[2].pos)
+      return this.encrypt(c);
   }
 }
 
 
-var theRotors = [new Rotor(I_CODE), new Rotor(II_CODE), new Rotor(III_CODE)];
-var refl = new Reflector(A);
+var theRotors = [new Rotor(III_CODE, III_ROTATE), new Rotor(II_CODE, II_ROTATE),
+                new Rotor(I_CODE, I_ROTATE)];
+var refl = new Reflector(B);
 
 var En = new Enigma(theRotors, refl);
+//En.rotors[0].pos = 25;
 
 
 document.getElementById("input-button").onclick = function() {
@@ -131,10 +147,26 @@ document.getElementById("input-button").onclick = function() {
 }
 
 
+
 // give each letter key a function
 for (let i = 0; i < alphabet.length; i++) {
-  document.getElementById(alphabet[i]).onclick = function() {
-    document.getElementById(alphabet[i]).style.backgroundColor = "rgb( 200,150 ,250 )";
-    console.log(alphabet[i]);
+  let element = document.getElementById(alphabet[i]);
+  element.onmousedown = function() {
+    element.style.backgroundColor = "rgb(200,150,250)";
+
   }
+  element.onclick = function() {
+    element.style.backgroundColor = "rgb(230,240,240)";
+    document.getElementById("output-box").value += En.buttonPress(intToLetter(i));
+    //console.log(alphabet[i]);
+  }
+  element.onmouseup = function() {
+    element.style.backgroundColor = "rgb(200,150,250)";
+  }
+
+  element.onmouseout = function() {
+    element.style.backgroundColor = "rgb(230,240,240)";
+  }
+
+
 }
