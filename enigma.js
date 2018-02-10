@@ -39,6 +39,8 @@ const C           = Array.from("fvpjiaoyedrzxwgctkuqsbnmhl");
 const BTHIN       = Array.from("enkqauywjicopblmdxzvfthrgs");
 const CTHIN       = Array.from("rdobjntkvehmlfcwzaxgyipsuq");
 
+const reflectorPresets = [A, B, C, BTHIN, CTHIN];
+
 const zeroTo25    = makeRangeArray(0,26);
 const letterToInt = makeMappingFunction(alphabet, zeroTo25);
 const intToLetter = makeMappingFunction(zeroTo25, alphabet);
@@ -157,17 +159,10 @@ function Enigma(rotors, reflector) {
           //this.rotors[2].pos = (this.rotors[2].pos + 1) % 26;
         }
     }
-
-
   }
 
   this.buttonPress = function(c) {
       this.step();
-    //   console.log(intToLetter(this.rotors[0].pos))
-    //   console.log(intToLetter(this.rotors[1].pos))
-    //   console.log(intToLetter(this.rotors[2].pos))
-    //   console.log("---------------------")
-
       return this.encrypt(c);
   }
   this.blockInput = function(text) {
@@ -195,6 +190,9 @@ document.getElementById("input-button").onclick = function() {
   //document.getElementById("output-box").value = inputVal;
 }
 
+document.getElementById("reset").onclick = function() {
+  document.getElementById("output-box").value = "";
+}
 
 
 // give each letter key a function
@@ -260,3 +258,18 @@ for (let rotorPosition = 0; rotorPosition < 3; rotorPosition++) {
     }
   }
 }
+
+
+// give functions to the reflector button
+for (let reflectorNum = 0; reflectorNum < 3; reflectorNum++) {
+  let reflector = document.getElementById("ref" + intToLetter(reflectorNum));
+  reflector.onclick = function() {
+    En.reflector = new Reflector(reflectorPresets[reflectorNum]);
+  }
+}
+
+var theRotors = [new Rotor(I_CODE, I_ROTATE), new Rotor(II_CODE, II_ROTATE),
+                new Rotor(III_CODE, III_ROTATE)];
+var refl = new Reflector(A);
+
+var En = new Enigma(theRotors, refl);

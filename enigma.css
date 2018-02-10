@@ -71,7 +71,7 @@
 }
 
 #output-box {
-    width: 260px;
+    width: 240px;
     height: 2em;
 }
 
@@ -88,7 +88,7 @@
 
 .boxy {
   float: left;
-  height: 120px;
+  height: 140px;
   width: 250px;
   border-radius: 5%;
   margin: 20px 30px 30px 30px;
