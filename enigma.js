@@ -114,23 +114,39 @@ function Enigma(rotors, reflector) {
     x = intToLetter(x);
     return x;
   }
+
+  this.setRotor = function(rotorNum, rotorPos) {
+    this.rotors[rotorNum].pos = rotorPos % 26;
+    var theRotor = document.getElementById("rotor" + (rotorNum+1) +"-pos");
+    theRotor.innerHTML = intToLetter(this.rotors[rotorNum].pos).toUpperCase();
+  }
+
+  this.incRotor = function(rotorNum) {
+    this.setRotor(rotorNum, (this.rotors[rotorNum].pos + 1));
+  }
+
   // the stepping sequence is not quite like a normal odometer
   //
   this.step = function() {
     // step the 0th rotor by 1
-    this.rotors[0].pos = (this.rotors[0].pos + 1) % 26;
+    this.incRotor(0);
+    //this.rotors[0].pos = (this.rotors[0].pos + 1) % 26;
     // stepping for middle rotor (rotors[1])
     // either rotors[0] reaches a rotate position
     // or rotors[1] is just before it's rotate position
     if (this.rotors[0].rotatePositions.includes(this.rotors[0].pos) ||
         this.rotors[1].rotatePositions.includes((this.rotors[1].pos + 1) % 26)) {
         // rotate rotor 1
-        this.rotors[1].pos = (this.rotors[1].pos + 1) % 26;
+        this.incRotor(1);
+        //this.rotors[1].pos = (this.rotors[1].pos + 1) % 26;
         // check if this now requires a step for rotors[2]
         if (this.rotors[1].rotatePositions.includes(this.rotors[1].pos)) {
-            this.rotors[2].pos = (this.rotors[2].pos + 1) % 26;
+          this.incRotor(2);
+          //this.rotors[2].pos = (this.rotors[2].pos + 1) % 26;
         }
     }
+    
+
   }
 
   this.buttonPress = function(c) {
@@ -158,7 +174,7 @@ var theRotors = [new Rotor(III_CODE, III_ROTATE), new Rotor(II_CODE, II_ROTATE),
 var refl = new Reflector(B);
 
 var En = new Enigma(theRotors, refl);
-En.rotors[1].pos = 2;
+//En.rotors[1].pos = 2;
 
 
 document.getElementById("input-button").onclick = function() {
