@@ -6,6 +6,7 @@
 const alphabet    = Array.from("abcdefghijklmnopqrstuvwxyz")
 
 // rotor configurations         abcdefghijklmnopqrstuvwxyz
+
 const I_CODE      = Array.from("ekmflgdqvzntowyhxuspaibrcj");
 const II_CODE     = Array.from("ajdksiruxblhwtmcqgznpyfvoe");
 const III_CODE    = Array.from("bdfhjlcprtxvznyeiwgakmusqo");
@@ -15,6 +16,10 @@ const VI_CODE     = Array.from("jpgvoumfyqbenhzrdkasxlictw");
 const VII_CODE    = Array.from("nzjhgrcxmyswboufaivlpekqdt");
 const VIII_CODE   = Array.from("fkqhtlxocbjspdzramewniuygv");
 
+const rotorPresets = [I_CODE ,II_CODE ,II_CODE ,IV_CODE ,V_CODE,
+                      VI_CODE, VII_CODE, VIII_CODE];
+
+
 const I_ROTATE    = ["r"];
 const II_ROTATE   = ["f"];
 const III_ROTATE  = ["w"];
@@ -23,6 +28,9 @@ const V_ROTATE    = ["a"];
 const VI_ROTATE   = ["a", "n"];
 const VII_ROTATE  = ["a", "n"];
 const VIII_ROTATE = ["a", "n"];
+
+const rotatePresets = [I_ROTATE ,II_ROTATE ,II_ROTATE ,IV_ROTATE ,V_ROTATE,
+                      VI_ROTATE, VII_ROTATE, VIII_ROTATE];
 
 // reflector configurations     abcdefghijklmnopqrstuvwxyz
 const A           = Array.from("ejmzalyxvbwfcrquontspikhgd");
@@ -125,6 +133,10 @@ function Enigma(rotors, reflector) {
     this.setRotor(rotorNum, (this.rotors[rotorNum].pos + 1));
   }
 
+  this.decRotor = function(rotorNum) {
+    this.setRotor(rotorNum, (this.rotors[rotorNum].pos + 25));
+  }
+
   // the stepping sequence is not quite like a normal odometer
   //
   this.step = function() {
@@ -145,7 +157,7 @@ function Enigma(rotors, reflector) {
           //this.rotors[2].pos = (this.rotors[2].pos + 1) % 26;
         }
     }
-    
+
 
   }
 
@@ -206,4 +218,45 @@ for (let i = 0; i < alphabet.length; i++) {
   }
 
 
+}
+
+
+// give functions to the increment, decrement buttonPress
+document.getElementById("rotor1-inc").onclick = function() {
+  En.incRotor(0);
+}
+
+document.getElementById("rotor2-inc").onclick = function() {
+  En.incRotor(1);
+}
+
+document.getElementById("rotor3-inc").onclick = function() {
+  En.incRotor(2);
+}
+
+document.getElementById("rotor1-dec").onclick = function() {
+  En.decRotor(0);
+}
+
+document.getElementById("rotor2-dec").onclick = function() {
+  En.decRotor(1);
+}
+
+document.getElementById("rotor3-dec").onclick = function() {
+  En.decRotor(2);
+}
+
+
+// give functions to the rotor radio buttons
+for (let rotorPosition = 0; rotorPosition < 3; rotorPosition++) {
+  for (let buttonIndex = 1; buttonIndex < 9; buttonIndex++) {
+    let button = document.getElementById("rot" + (rotorPosition+1) + "-" + buttonIndex);
+    button.onclick = function() {
+      theRotors[rotorPosition] = new Rotor(rotorPresets[buttonIndex-1],
+                                          rotatePresets[buttonIndex-1]);
+      let theRotor = document.getElementById("rotor" + (rotorPosition+1) + "-pos");
+      theRotor.innerHTML = intToLetter(theRotors[rotorPosition].pos).toUpperCase();
+
+    }
+  }
 }
